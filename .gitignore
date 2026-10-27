@@ -1,0 +1,15 @@
+node_modules/
+evidence/*.json
+evidence/*.sha256
+.env
+.DS_Store
+
+# Additional secret protection
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Temporary outputs
+coverage/
+*.log
