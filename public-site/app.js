@@ -1,7 +1,7 @@
 'use strict';
 
 // Public-facing read-only exhibit. No network requests other than ./data.json.
-// No /api/run, Docker, localhost server process, secrets, or model API.
+// No command execution, Docker runner, localhost service, or model API.
 const byId = id => document.getElementById(id);
 let diffOnly = true;
 let comparison;
