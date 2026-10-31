@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>TengaLab — Proof Console</title>
+  <link rel="stylesheet" href="/app.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail" aria-label="Dashboard navigation">
+      <div class="brand"><span class="brand-mark">T<span class="spark">.</span></span><span>TengaLab<small>PROOF CONSOLE</small></span></div>
+      <div class="rail-label">WORKSPACE</div>
+      <nav>
+        <a href="#overview" class="active"><span class="nav-icon">◈</span> Overview</a>
+        <a href="#comparison"><span class="nav-icon">⌘</span> Source comparison</a>
+        <a href="#execution"><span class="nav-icon">▣</span> Verification log</a>
+        <a href="#evidence"><span class="nav-icon">◇</span> Evidence</a>
+      </nav>
+      <div class="rail-bottom">
+        <span class="tiny-dot"></span> LOCAL / OFFLINE
+        <p>Meta Muse proposal is a recorded fixture. Verification executes locally in Docker.</p>
+        <a class="repo-link" href="https://github.com/bakomamman-tech/tengalab" target="_blank" rel="noopener noreferrer">VIEW REPOSITORY ↗</a>
+      </div>
+    </aside>
+    <main id="overview">
+      <div class="topbar">
+        <span class="breadcrumb">WORKSPACE <span>/</span> EXPERIMENT 001 <span>/</span> REPAIR VALIDATION</span>
+        <div class="top-status"><span class="pulse-dot"></span><span id="top-status">WAITING FOR STATUS</span></div>
+      </div>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> EXPERIMENTAL SOFTWARE RELIABILITY LAB</div>
+          <h1>Don't trust the patch.<br><em>Prove it.</em></h1>
+          <p>Meta-generated software repairs meet an independent, adversarial proof gate. Every verdict is backed by executable checks—not AI confidence.</p>
+          <div class="hero-actions">
+            <button id="run-button" class="run-button" type="button"><span>▶</span> Run independent verification</button>
+            <span class="run-note">6 invariants · Rootless Docker · No API key</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="orb orb-one"></div><div class="orb orb-two"></div>
+          <div class="signal-card signal-top"><span class="signal-symbol">⌁</span><span>AI-GENERATED PATCH</span><span class="signal-id">MUSE SPARK 1.3</span></div>
+          <div class="connector"><span></span><span></span><span></span></div>
+          <div class="signal-card signal-bottom"><span class="signal-symbol approved">✓</span><span>INDEPENDENT PROOF</span><span class="signal-id">6 VERIFIED CHECKS</span></div>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Verified experiment metrics">
+        <div class="metric"><div class="metric-title">ORIGINAL SOURCE <span class="metric-symbol">↘</span></div><div class="metric-number" id="baseline-count">—</div><div class="metric-foot"><span class="pill pill-muted" id="baseline-verdict">NOT LOADED</span> Baseline</div></div>
+        <div class="metric highlight"><div class="metric-title">META-GENERATED REPAIR <span class="metric-symbol">✧</span></div><div class="metric-number" id="repair-count">—</div><div class="metric-foot"><span class="pill pill-green" id="repair-verdict">NOT LOADED</span> Fixture result</div></div>
+        <div class="metric"><div class="metric-title">NEGATIVE CONTROL <span class="metric-symbol">⊘</span></div><div class="metric-number" id="negative-count">—</div><div class="metric-foot"><span class="pill pill-muted" id="negative-verdict">NOT LOADED</span> Ineffective edit</div></div>
+        <div class="metric"><div class="metric-title">EVIDENCE INTEGRITY <span class="metric-symbol">♧</span></div><div class="metric-number metric-label" id="integrity-status">—</div><div class="metric-foot"><span class="pill" id="evidence-label">AWAITING DATA</span> SHA-256 check</div></div>
+      </section>
+
+      <section class="body-grid">
+        <article class="panel pipeline">
+          <div class="section-heading"><div><span class="section-eyebrow">01 / WORKFLOW</span><h2>Independent verification</h2></div><span class="square-indicator">04 STAGES</span></div>
+          <div class="stages">
+            <div class="stage"><span class="stage-number">01</span><div><strong>Regression tests</strong><p>Run the complete Node.js test suite.</p></div><span class="stage-flag">NODE</span></div>
+            <div class="stage"><span class="stage-number">02</span><div><strong>Container execution</strong><p>Test original and model-generated sources separately.</p></div><span class="stage-flag">DOCKER</span></div>
+            <div class="stage"><span class="stage-number">03</span><div><strong>Independent evidence</strong><p>Recompute observations and verify the checksum.</p></div><span class="stage-flag">SHA-256</span></div>
+            <div class="stage"><span class="stage-number">04</span><div><strong>Negative control</strong><p>Reject a deliberately ineffective modification.</p></div><span class="stage-flag">REJECT</span></div>
+          </div>
+          <div class="runner-status" role="status" aria-live="polite"><span class="tiny-dot"></span><span id="run-state">Ready for local verification</span></div>
+        </article>
+        <article class="panel proof-summary" id="evidence">
+          <div class="section-heading"><div><span class="section-eyebrow">02 / AUDIT TRAIL</span><h2>Reproducible evidence</h2></div><span class="square-indicator green">READ-ONLY</span></div>
+          <p class="panel-intro">Proof metadata comes from a real execution. Checksums establish local file integrity, not external attestation.</p>
+          <dl class="evidence-grid">
+            <div><dt>Recorded run</dt><dd id="recorded-at">Not found</dd></div>
+            <div><dt>Git commit</dt><dd class="mono" id="git-commit">—</dd></div>
+            <div><dt>Source SHA-256</dt><dd class="mono truncated" id="source-digest" title="No digest">—</dd></div>
+            <div><dt>Evidence SHA-256</dt><dd class="mono truncated" id="proof-digest" title="No digest">—</dd></div>
+            <div><dt>Evidence folder</dt><dd class="mono" id="evidence-folder">—</dd></div>
+          </dl>
+          <div class="scope-note"><span>ⓘ</span> ACCEPT_FIXTURE means success on six deterministic test scenarios. It does not certify production correctness.</div>
+        </article>
+      </section>
+
+      <section id="comparison" class="panel compare-panel">
+        <div class="section-heading"><div><span class="section-eyebrow">03 / MODEL CONTRIBUTION</span><h2>See the actual source repair</h2></div><span class="recorded-chip">◉ RECORDED META MUSE PROPOSAL</span></div>
+        <p class="compare-copy">These code panes load from the committed preview fixture and original source. The comparison is read-only; starting verification does not make a new Meta API call.</p>
+        <div class="code-grid">
+          <div class="code-panel"><div class="code-heading"><span class="code-dot red"></span> ORIGINAL SOURCE <span class="code-tag">BUGGY</span></div><pre id="original-code" tabindex="0">Loading original source…</pre></div>
+          <div class="code-panel"><div class="code-heading"><span class="code-dot green"></span> META-GENERATED SOURCE <span class="code-tag accepted">PROPOSAL</span></div><pre id="proposed-code" tabindex="0">Loading generated source…</pre></div>
+        </div>
+        <div class="fixture-status" id="fixture-status">Checking source digests…</div>
+      </section>
+
+      <section id="execution" class="panel console-panel">
+        <div class="section-heading"><div><span class="section-eyebrow">04 / LIVE EXECUTION</span><h2>Verification terminal</h2></div><span id="terminal-badge" class="square-indicator">IDLE</span></div>
+        <div class="terminal"><div class="terminal-top"><span class="terminal-dots"><i></i><i></i><i></i></span><span>tengalab / judge-demo.sh</span><span>LOCALHOST</span></div><pre id="terminal-output" role="log" aria-live="off"># Start a verification run to watch the actual engine output.
+# No simulated verdicts. No Meta API key required.</pre></div>
+      </section>
+      <footer><span>TENGALAB / TENGACION TECHNOLOGIES LIMITED</span><span>HACKATHON MVP · VERIFIED FIXTURE, NOT PRODUCTION CERTIFICATION</span></footer>
+    </main>
+  </div>
+</body>
+</html>
