@@ -84,6 +84,10 @@
       <section id="comparison" class="panel compare-panel">
         <div class="section-heading"><div><span class="section-eyebrow">03 / MODEL CONTRIBUTION</span><h2>See the actual source repair</h2></div><span class="recorded-chip">◉ RECORDED META MUSE PROPOSAL</span></div>
         <p class="compare-copy">These code panes load from the committed preview fixture and original source. The comparison is read-only; starting verification does not make a new Meta API call.</p>
+        <div class="compare-toolbar">
+          <div class="diff-legend"><span class="legend-removed"></span> Removed or changed in original <span class="legend-added"></span> Added or changed by Meta Muse</div>
+          <button id="diff-toggle" class="diff-toggle" type="button" aria-pressed="true">Show full source</button>
+        </div>
         <div class="code-grid">
           <div class="code-panel"><div class="code-heading"><span class="code-dot red"></span> ORIGINAL SOURCE <span class="code-tag">BUGGY</span></div><pre id="original-code" tabindex="0">Loading original source…</pre></div>
           <div class="code-panel"><div class="code-heading"><span class="code-dot green"></span> META-GENERATED SOURCE <span class="code-tag accepted">PROPOSAL</span></div><pre id="proposed-code" tabindex="0">Loading generated source…</pre></div>
