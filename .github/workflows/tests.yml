@@ -1,7 +1,7 @@
 name: TengaLab tests
 on:
   push:
-    branches: [main, feature/proof-console]
+    branches: [main, feature/proof-console, feature/public-render-demo]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -22,3 +22,5 @@ jobs:
           node-version: '22'
       - name: Run automated tests
         run: npm test
+      - name: Build public read-only demo
+        run: npm run build:public
