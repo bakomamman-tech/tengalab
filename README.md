@@ -1,99 +1,159 @@
-# TengaLab — Experiment 001
+# TengaLab
 
-> **Don't trust the patch. Prove it.**
+### Don't trust the patch. Prove it.
 
-An original, dependency-free Node.js laboratory for testing a software repair against adversarial invariants. Built as a starting point for **Tengacion Technologies Limited's Meta Global AI Developer Hackathon 2026** entry.
+**AI-generated software repair with independent experimental verification.**
 
-**Status: Milestone 1 prototype.** Three prewritten service implementations (buggy, naive, correct) demonstrate the independent proof gate. A **real Meta Muse Spark API adapter** can choose the next bounded experiment, but it is **not** yet an autonomous bug-discovery/patch-writing system. No live Meta API requests have been executed as part of this package's offline verification.
+TengaLab is an experimental software reliability laboratory built for the Meta Global AI Developer Hackathon 2026, Startup Track.
 
-## Run it locally
+It uses Meta Muse Spark 1.3 to investigate a software defect and generate a replacement source file. A separate verification harness evaluates the generated code against predefined behavioral invariants.
 
-Requires **Node.js >=20** (Node 22 recommended) on Windows, Linux, or WSL Ubuntu. No `npm install` is needed.
+## Verified results
+
+| Candidate | Tests passed | Verdict |
+|---|---:|---|
+| Original buggy source | 3/6 | REJECT |
+| Meta Muse-generated repair | 6/6 | ACCEPT_FIXTURE |
+| Ineffective source modification | 3/6 | REJECT |
+
+**65 automated regression tests passed** in the latest verified development run.
+
+The model-generated repair was produced during a live Meta API experiment and packaged as a reproducible offline demonstration fixture.
+
+## Why TengaLab?
+
+An AI-generated patch may look convincing without fixing the underlying defect.
+
+TengaLab separates the repair proposal from its acceptance decision:
+
+1. Investigate a reproducible failure.
+2. Ask Meta Muse to generate a candidate source-code repair.
+3. Validate the replacement target and source checksum.
+4. Stage the candidate separately from the original repository.
+5. Execute six independent fixture experiments in restricted rootless Docker.
+6. Recompute the reported invariant outcomes.
+7. Accept or reject the fixture results and record evidence.
+
+The model's explanation does not determine acceptance.
+
+## Quick start
+
+Requirements:
+
+- Node.js 22
+- Git
+- Bash on Linux or WSL Ubuntu
+- Rootless Docker
+- Cached Docker image: node:22-bookworm-slim
+
+Clone the Git repository:
 
 ```bash
-node --version
+git clone https://github.com/bakomamman-tech/tengalab.git
+cd tengalab
+```
+
+Run the regression suite:
+
+```bash
 npm test
-npm run demo
 ```
 
-Expected demo summary (exact evidence paths will vary):
-
-```text
-buggy    3/6 REJECT
-naive    2/6 REJECT
-correct  6/6 ACCEPT
-```
-
-The evidence JSON plus separate SHA256 digest are written into `evidence/` on each run. Those files are intentionally ignored by git.
-
-## Run investigations
-
-Choose a candidate and a deterministic (non-AI) planner:
+Run the complete offline demonstration:
 
 ```bash
-node src/cli.mjs investigate --candidate correct --agent deterministic
+./scripts/judge-demo.sh
 ```
 
-To try Meta's real model-generated experiment selection:
+The offline demo uses a previously generated Meta Muse source proposal. It does not require a Meta API key or make new Meta API requests.
 
-```bash
-export MODEL_API_KEY='paste-your-key-locally-not-in-git-or-chat'
-node src/cli.mjs investigate --candidate buggy --agent meta
-```
+The demonstration reports the original baseline, the AI-generated repair, the deliberately ineffective modification, and evidence integrity results.
 
-- Endpoint: `https://api.meta.ai/v1/chat/completions`
-- Default model: `muse-spark-1.3` (override with `META_MODEL` for supported Chat Completions models).
-- Auth: Bearer `MODEL_API_KEY`.
-- Schema constrained output: `{nextExperiment, rationale}`.
-- Model has **no arbitrary shell, filesystem, Git, or network tool rights**. It chooses one of six experiment IDs, executed by a hard-coded dispatcher.
-- A failed verification intentionally exits with status `2`; this is **not** an application crash.
+The Docker runner requires a complete Git checkout, not only an extracted source archive.
 
-> **Security:** Export your API key in your own shell, do not paste it into ChatGPT or commit `.env`. Do not run untrusted repositories in this starter; a real system needs hardened, isolated execution and secret stripping.
-
-## The experiment
-
-The event service has a bounded ring channel. When 300 messages arrive before a receiver advances on a 32-slot channel, the receiver gets a `Lagged` event representing dropped messages. The original bug incorrectly treats this nonterminal event as a shutdown. A naive patch stops terminating on lag, but **also fails to respect an explicit shutdown or channel closure**. The correct candidate distinguishes both signals, using a sticky control-plane shutdown request that survives overflow.
-
-| Test | Expected invariant |
-|---|---|
-| `steady` | Three ordinary messages processed; service alive |
-| `burst` | Recover from lag without terminating |
-| `shutdown` | Explicit shutdown terminates |
-| `close` | Closed channel terminates |
-| `overflow_then_shutdown` | Shutdown still honored during overflow |
-| `lag_then_close` | Overflow tolerated, then closure honored |
-
-All six must pass for acceptance. The fixture is a **deterministic simulation**, not a demonstration of concurrent thread scheduling in production.
-
-## Files
+## Architecture
 
 ```text
-src/lab/channel.mjs       Bounded event channel with explicit Lagged and Closed states
-src/lab/service.mjs       Three prewritten candidate implementations
-src/lab/experiments.mjs   Independent experiment definitions and invariants
-src/lab/verify.mjs        All-invariants gate
-src/lab/evidence.mjs      Evidence JSON and stable SHA256 hash
-src/agent/deterministic.mjs   Non-AI control condition
-src/agent/meta.mjs        Real Muse Spark API-backed next-experiment selection
-src/agent/investigate.mjs Safe bounded dispatch loop
-src/cli.mjs               Demo and investigation commands
-tests/                    Node built-in tests
-docs/                     Architecture and next build milestone
+Meta Muse Spark 1.3
+        |
+        v
+Generated source proposal
+        |
+        v
+Target and SHA-256 validation
+        |
+        v
+Temporary source staging
+        |
+        v
+Restricted rootless Docker
+        |
+        v
+Six independent experiments
+        |
+        v
+Independent observation gate
+        |
+        v
+ACCEPT_FIXTURE / REJECT
+        |
+        v
+Evidence JSON + SHA-256
 ```
 
-## What is not implemented yet
+Key components:
 
-1. Model-generated *new* test programs or hypotheses; the six experiments here are predefined.
-2. Model-generated candidate patches and Git worktree isolation.
-3. Real concurrent runtime / fault injection (fixture currently deterministic).
-4. Production Docker isolation, resource limits, GitHub integration, or review/approval workflows.
-5. Live React dashboard, external benchmark, or validated performance improvements.
+- `src/repair/meta-generated-patch.mjs` — Meta source generation
+- `src/repair/patch-preview.mjs` — patch validation
+- `src/lab/verify.mjs` — fixture experiments
+- `src/lab/probe-result-gate.mjs` — independent verdict recomputation
+- `scripts/probe-generated-patch.sh` — Docker verification
+- `scripts/record-probe.mjs` — evidence recording
+- `scripts/negative-control.mjs` — defective-repair rejection
+- `scripts/judge-demo.sh` — one-command demonstration
+- `demo/fixtures/` — packaged Meta-generated source proposal
 
-We should build these in that order, measuring quality at each stage. Don't claim that this MVP autonomously discovers or repairs arbitrary bugs.
+## Experimental boundaries
 
-## Verified reference docs
+The demonstration verifies six deterministic service-lifecycle invariants:
 
-- [Meta Model API overview](https://dev.meta.ai/docs/overview)
-- [Meta Chat Completions](https://dev.meta.ai/docs/protocols/chat-completions)
-- [Meta structured outputs](https://dev.meta.ai/docs/structured-output)
-- [Meta Global Hackathon](https://dev.meta.ai/events/global-hackathon)
+- Normal event handling
+- Recovery from receiver lag
+- Explicit shutdown
+- Closed-channel termination
+- Overflow followed by shutdown
+- Lag followed by channel closure
+
+`ACCEPT_FIXTURE` means the submitted candidate passed these six fixture checks.
+
+It does not establish general software correctness, production readiness, or resistance to arbitrary malicious code.
+
+The evidence is locally generated and checksum-checked, not externally attested. SHA-256 checks are integrity checks, not digital signatures.
+
+Rootless Docker with restricted privileges, resources and networking reduces exposure but is not a complete security boundary against hostile code.
+
+## Meta API
+
+The live generation adapter supports Meta Muse Spark 1.3 through the Meta Model API.
+
+Credentials are supplied through `MODEL_API_KEY` at runtime. No API key is included in the demonstration fixture.
+
+The offline demo is the recommended starting point for reviewers.
+
+## Project status
+
+**Hackathon MVP — working experimental demonstration.**
+
+The current implementation demonstrates AI-generated source repair, controlled fixture testing, rejection of ineffective patches, and reproducible local evidence.
+
+The broader vision is a general-purpose autonomous reliability laboratory supporting diverse repositories, richer experiments, secure execution and human-reviewed repair workflows.
+
+## Hackathon
+
+Meta Global AI Developer Hackathon 2026
+
+Track: Startup
+
+Developed by Tengacion Technologies Limited.
+
+**TengaLab — Don't trust the patch. Prove it.**
