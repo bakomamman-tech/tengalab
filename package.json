@@ -11,6 +11,7 @@
     "demo": "node src/cli.mjs compare",
     "investigate": "node src/cli.mjs investigate --candidate buggy --agent deterministic",
     "investigate:meta": "node src/cli.mjs investigate --candidate buggy --agent meta",
-    "console": "node src/console/server.mjs"
+    "console": "node src/console/server.mjs",
+    "build:public": "node scripts/build-public-site.mjs"
   }
 }
