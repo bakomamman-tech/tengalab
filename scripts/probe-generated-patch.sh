@@ -42,6 +42,16 @@ trap cleanup EXIT
 git archive --format=tar HEAD src package.json |
   tar -xf - -C "$STAGE"
 
+# The judge wrapper uses umask 077 for private evidence.
+# Allow the non-root container user to read only this staged
+# copy of committed source code, never the original repository.
+if [[ ! -f "$STAGE/src/lab/verify.mjs" ]]; then
+  echo "FAIL: Verification harness missing from stage" >&2
+  exit 1
+fi
+
+chmod -R a+rX -- "$STAGE"
+
 run_isolated() {
   local mode="$1"
   CONTAINER_NAME="tengalab-probe-$RANDOM-$$"
