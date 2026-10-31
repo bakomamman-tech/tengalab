@@ -157,3 +157,14 @@ Track: Startup
 Developed by Tengacion Technologies Limited.
 
 **TengaLab — Don't trust the patch. Prove it.**
+
+## Local Proof Console (OBS demo)
+
+The `feature/proof-console` branch adds a local web interface for the verified offline demonstration.
+
+```bash
+npm test
+npm run console
+```
+
+Open **http://localhost:4173** in Windows while Ubuntu is running. The page loads the previously recorded Meta Muse source proposal, displays locally checked evidence, and offers a button that launches the actual `scripts/judge-demo.sh` in rootless Docker. It does **not** make a new model API call. See [Proof Console guide](docs/PROOF-CONSOLE.md).
