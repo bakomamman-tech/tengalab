@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { assertObservedSuite } from '../src/lab/probe-result-gate.mjs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -123,6 +124,19 @@ const imageId = execFileSync(
   ],
   { encoding: 'utf8' }
 ).trim();
+
+// Recompute truth from recorded observations, not pass labels.
+assertObservedSuite(
+  baseline,
+  'baseline',
+  ['burst', 'overflow_then_shutdown', 'lag_then_close']
+);
+
+assertObservedSuite(
+  proposed,
+  'proposed',
+  []
+);
 
 const report = {
   schemaVersion: 1,
