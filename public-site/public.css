@@ -1,0 +1,13 @@
+/* Public read-only exhibit: no run or execution controls are present. */
+.hero-actions .run-button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.hero-actions .run-button:hover{color:#071b13}
+.rail-bottom .tiny-dot{background:#a5c9f6;box-shadow:0 0 0 3px #4c91c71a}
+.rail-bottom p{color:#9bb0b5}
+.run-note{color:#b4c5c3}
+.console-panel .terminal pre{white-space:pre-wrap}
+.metric .metric-foot{min-width:0}
+#integrity-status{color:#f5d19c}
+#evidence-label{color:#f4d59f;border-color:#635743}
+.scope-note{border-color:#715e3a}
+.eyebrow{color:#aaf4d3}
+@media (min-width:1200px){.hero{min-height:365px}}
