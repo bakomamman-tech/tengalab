@@ -119,13 +119,107 @@ async function refresh() {
   }
 }
 
+
+let diffOnly = true;
+let sourceComparison = null;
+
+function sourceDiff(original, proposed) {
+  const before = original.replace(/\r\n/g, '\n').split('\n');
+  const after = proposed.replace(/\r\n/g, '\n').split('\n');
+  const beforeChanged = new Set();
+  const afterChanged = new Set();
+  const rows = Array.from({ length: before.length + 1 },
+    () => new Uint16Array(after.length + 1));
+
+  // Longest-common-subsequence alignment is used for display only.
+  // Experimental verdicts still come exclusively from the proof gate.
+  for (let i = before.length - 1; i >= 0; i--) {
+    for (let j = after.length - 1; j >= 0; j--) {
+      rows[i][j] = before[i] === after[j] ?
+        1 + rows[i + 1][j + 1] :
+        Math.max(rows[i + 1][j], rows[i][j + 1]);
+    }
+  }
+  let i = 0;
+  let j = 0;
+  while (i < before.length && j < after.length) {
+    if (before[i] === after[j]) {
+      i++;
+      j++;
+    } else if (rows[i + 1][j] >= rows[i][j + 1]) {
+      beforeChanged.add(i++);
+    } else {
+      afterChanged.add(j++);
+    }
+  }
+  while (i < before.length) beforeChanged.add(i++);
+  while (j < after.length) afterChanged.add(j++);
+  return { before, after, beforeChanged, afterChanged };
+}
+
+function displaySource(id, lines, changed, kind) {
+  const target = el(id);
+  const selected = new Set();
+
+  if (diffOnly) {
+    for (const index of changed) {
+      for (let context = Math.max(0, index - 2);
+        context <= Math.min(lines.length - 1, index + 2); context++) {
+        selected.add(context);
+      }
+    }
+  } else {
+    for (let index = 0; index < lines.length; index++) selected.add(index);
+  }
+
+  const fragment = document.createDocumentFragment();
+  let previous = -1;
+  for (const index of [...selected].sort((a, b) => a - b)) {
+    if (index > previous + 1) {
+      const gap = document.createElement('span');
+      gap.className = 'source-gap';
+      gap.textContent = '      ··· ' + (index - previous - 1) + ' unchanged lines ···';
+      fragment.appendChild(gap);
+    }
+
+    const line = document.createElement('span');
+    const altered = changed.has(index);
+    line.className = 'source-line' + (altered ? ' source-' + kind : '');
+    line.textContent =
+      (altered ? (kind === 'removed' ? '−' : '+') : ' ') +
+      String(index + 1).padStart(4, ' ') + '  ' + lines[index];
+    fragment.appendChild(line);
+    previous = index;
+  }
+
+  if (previous < lines.length - 1) {
+    const gap = document.createElement('span');
+    gap.className = 'source-gap';
+    gap.textContent = '      ··· ' + (lines.length - previous - 1) + ' unchanged lines ···';
+    fragment.appendChild(gap);
+  }
+
+  target.replaceChildren(fragment);
+  target.scrollTop = 0;
+}
+
+function drawComparison() {
+  if (!sourceComparison) return;
+  displaySource('original-code', sourceComparison.before,
+    sourceComparison.beforeChanged, 'removed');
+  displaySource('proposed-code', sourceComparison.after,
+    sourceComparison.afterChanged, 'added');
+  el('diff-toggle').textContent = diffOnly ? 'Show full source' : 'Show changes only';
+  el('diff-toggle').setAttribute('aria-pressed', String(diffOnly));
+}
+
 async function loadFixture() {
   try {
     const response = await fetch('/api/fixture', { cache: 'no-store' });
     if (!response.ok) throw new Error('Cannot load fixture (' + response.status + ')');
     const data = await response.json();
-    text('original-code', data.original);
-    text('proposed-code', data.proposed);
+    sourceComparison = sourceDiff(data.original, data.proposed);
+    drawComparison();
     fixtureValidated = data.valid === true;
     text('fixture-status', fixtureValidated ?
       '✓ Source target and SHA-256 digests match the recorded Meta-generated repair.' :
@@ -137,6 +231,11 @@ async function loadFixture() {
   }
   await refresh();
 }
+
+el('diff-toggle').addEventListener('click', () => {
+  diffOnly = !diffOnly;
+  drawComparison();
+});
 
 elements.button.addEventListener('click', async () => {
   if (!fixtureValidated || elements.button.disabled) return;
