@@ -53,6 +53,12 @@ export async function buildPublicSite(outDir = join(ROOT, 'public-dist')) {
     .replace('href="/app.css"', 'href="./app.css"')
     .replace('src="/app.js"', 'src="./app.js"')
     .replace('LOCAL / OFFLINE', 'PUBLIC / READ-ONLY')
+    .replace('6 invariants · Rootless Docker · No API key',
+      'Recorded experiment · No installation · Read-only site')
+    .replace('Meta Muse proposal is a recorded fixture. Verification executes locally in Docker.',
+      'Meta Muse proposal was generated earlier. Verification ran in local Docker; this public exhibit is read-only.')
+    .replace('Proof metadata comes from a real execution. Checksums establish local file integrity, not external attestation.',
+      'Historical proof metadata from a real local run. The reported checksum check is not an external attestation.')
     .replace('Latest verification completed successfully', 'Recorded verification successful')
     .replace('Run the complete Node.js test suite.', '68 regression tests passed in the recorded run.')
     .replace('Test original and model-generated sources separately.',
