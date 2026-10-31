@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "demo": "node src/cli.mjs compare",
     "investigate": "node src/cli.mjs investigate --candidate buggy --agent deterministic",
-    "investigate:meta": "node src/cli.mjs investigate --candidate buggy --agent meta"
+    "investigate:meta": "node src/cli.mjs investigate --candidate buggy --agent meta",
+    "console": "node src/console/server.mjs"
   }
 }
