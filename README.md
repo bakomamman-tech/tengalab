@@ -6,6 +6,10 @@
 
 TengaLab is an experimental software reliability laboratory built for the Meta Global AI Developer Hackathon 2026, Startup Track.
 
+**Public website:** https://tengalab-proof-console.onrender.com — explore the source repair and previously recorded verification evidence in your browser. This is a read-only exhibit: it does not execute Docker or call the Meta API.
+
+**Local reproducible verification:** clone this repository, run `npm test` and `./scripts/judge-demo.sh` with the documented rootless Docker setup, then use `npm run console` to view the locally executed results.
+
 It uses Meta Muse Spark 1.3 to investigate a software defect and generate a replacement source file. A separate verification harness evaluates the generated code against predefined behavioral invariants.
 
 ## Verified results
@@ -16,7 +20,7 @@ It uses Meta Muse Spark 1.3 to investigate a software defect and generate a repl
 | Meta Muse-generated repair | 6/6 | ACCEPT_FIXTURE |
 | Ineffective source modification | 3/6 | REJECT |
 
-**65 automated regression tests passed** in the latest verified development run.
+**69 automated tests pass on the public-site release branch and main GitHub CI.** The recorded Docker experiment at commit `72380e5` used 68 automated tests.
 
 The model-generated repair was produced during a live Meta API experiment and packaged as a reproducible offline demonstration fixture.
 
