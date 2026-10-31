@@ -13,3 +13,6 @@ evidence/*.sha256
 # Temporary outputs
 coverage/
 *.log
+
+# Static Render build output
+public-dist/
